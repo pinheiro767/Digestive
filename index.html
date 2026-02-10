@@ -2,733 +2,947 @@
 <html lang="pt-BR">
  <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escape Game — Sistema Digestório</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&amp;display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>🔬 Medical Investigation: Digestive System</title>
   <style>
     body {
       box-sizing: border-box;
     }
-    
-    * { box-sizing: border-box; }
-    
-    html, body {
-      height: 100%;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    
-    .app-wrapper {
-      height: 100%;
-      width: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-    
-    .shake {
-      animation: shake 0.5s ease-in-out;
-    }
-    
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-8px); }
-      40% { transform: translateX(8px); }
-      60% { transform: translateX(-8px); }
-      80% { transform: translateX(8px); }
-    }
-    
-    .pulse-success {
-      animation: pulseSuccess 0.6s ease-out;
-    }
-    
-    @keyframes pulseSuccess {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-      100% { transform: scale(1); }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.4s ease-out;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .progress-fill {
-      transition: width 0.5s ease-out;
-    }
-    
-    .option-btn {
-      transition: all 0.2s ease;
-    }
-    
-    .option-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    }
-    
-    .option-btn:active:not(:disabled) {
-      transform: translateY(0);
-    }
-    
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      pointer-events: none;
-      z-index: 1000;
-    }
-    
-    @keyframes confettiFall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
     }
 
-    /* Bolhas Flutuantes */
-    .floating-bubbles {
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1729 100%);
+      color: #e0e7ff;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bg-anim {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none;
-      z-index: 0;
+      z-index: -1;
       overflow: hidden;
     }
 
-    .bubble {
+    .bg-blob {
       position: absolute;
-      border: 2px solid rgba(34, 211, 238, 0.15);
+      opacity: 0.1;
       border-radius: 50%;
-      background: radial-gradient(135deg at 30% 30%, rgba(34, 211, 238, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-      backdrop-filter: blur(10px);
-      box-shadow: 
-        inset -2px -2px 10px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(34, 211, 238, 0.1);
-      animation: float-bubble 6s ease-in-out infinite;
+      animation: float 15s ease-in-out infinite;
     }
 
-    @keyframes float-bubble {
-      0%, 100% {
-        transform: translateY(0px) translateX(0px);
-        opacity: 0.3;
-      }
-      25% {
-        transform: translateY(-30px) translateX(20px);
-        opacity: 0.5;
-      }
-      50% {
-        transform: translateY(-60px) translateX(-20px);
-        opacity: 0.4;
-      }
-      75% {
-        transform: translateY(-30px) translateX(10px);
-        opacity: 0.5;
-      }
+    .blob-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #06b6d4, #0ea5e9);
+      top: -10%;
+      left: -5%;
+      animation-delay: 0s;
     }
 
-    /* Posicionamento relativo para conteúdo */
-    #startScreen,
-    #gameScreen,
-    #endScreen {
-      position: relative;
-      z-index: 10;
+    .blob-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #8b5cf6, #6366f1);
+      bottom: -10%;
+      right: -5%;
+      animation-delay: 5s;
+      animation-duration: 20s;
     }
-    
-    .key-appear {
-      animation: keyAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    .blob-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #ec4899, #f43f5e);
+      top: 50%;
+      right: 10%;
+      animation-delay: 10s;
+      animation-duration: 25s;
     }
-    
-    @keyframes keyAppear {
-      0% { transform: scale(0) rotate(-90deg); opacity: 0; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -50px) scale(1.1); }
+      50% { transform: translate(-20px, 20px) scale(0.9); }
+      75% { transform: translate(50px, 50px) scale(1.05); }
     }
-    
-    .key-float {
-      animation: keyFloat 0.8s ease-out forwards;
-    }
-    
-    @keyframes keyFloat {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-80px) scale(0.8); opacity: 0; }
-    }
-    
-    .box-open {
-      animation: boxOpen 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    
-    @keyframes boxOpen {
-      0% { transform: scaleY(1) rotateX(0deg); }
-      50% { transform: scaleY(0.05) rotateX(-10deg); }
-      100% { transform: scaleY(1) rotateX(0deg); }
-    }
-    
-    .key-container {
+
+    .app-wrapper {
+      width: 100%;
+      height: 100%;
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-      min-height: 80px;
-      align-items: flex-end;
-    }
-    
-    .key-item {
+      flex-direction: column;
       position: relative;
-      width: 60px;
-      height: 60px;
-      font-size: 40px;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    header {
+      background: rgba(10, 14, 39, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(34, 211, 238, 0.3);
+      padding: 1rem 1.5rem;
+      position: relative;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+      margin: 0;
+      min-width: 300px;
+    }
+
+    .subtitle {
+      color: rgba(224, 231, 255, 0.7);
+      font-size: 0.95rem;
+      flex: 1;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: rgba(224, 231, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #22d3ee;
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+    }
+
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+        min-width: unset;
+      }
+
+      .stats {
+        width: 100%;
+        justify-content: space-around;
+        gap: 1rem;
+      }
+
+      .main-content {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+      }
+
+      .sidebar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 2px solid rgba(34, 211, 238, 0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      height: fit-content;
+    }
+
+    .card:hover {
+      border-color: rgba(34, 211, 238, 0.5);
+      box-shadow: 0 15px 50px rgba(34, 211, 238, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.05));
+      border-bottom: 2px solid rgba(34, 211, 238, 0.2);
+      padding: 1.2rem;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #22d3ee;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-subtitle {
+      color: rgba(224, 231, 255, 0.6);
+      font-size: 0.85rem;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .image-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid rgba(34, 211, 238, 0.3);
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(34, 211, 238, 0.1));
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-bottom: 1.2rem;
+      position: relative;
+      animation: shimmer 2s ease-in-out infinite;
     }
-    
-    .unite-animation {
-      animation: unite 0.8s ease-in-out;
+
+    @keyframes shimmer {
+      0%, 100% { border-color: rgba(34, 211, 238, 0.3); }
+      50% { border-color: rgba(34, 211, 238, 0.6); }
     }
-    
-    @keyframes unite {
-      0% { transform: translate(var(--tx), var(--ty)); }
-      100% { transform: translate(0, 0); }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 1rem;
+    }
+
+    .question-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #e0e7ff;
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .options-grid {
+      display: grid;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .option-btn {
+      padding: 1rem 1.2rem;
+      border: 2px solid rgba(34, 211, 238, 0.3);
+      background: rgba(30, 41, 59, 0.5);
+      color: #e0e7ff;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+      backdrop-filter: blur(5px);
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: rgba(34, 211, 238, 0.2);
+      border-color: rgba(34, 211, 238, 0.6);
+      transform: translateX(6px);
+    }
+
+    .option-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .option-btn.correct {
+      background: rgba(34, 197, 94, 0.3);
+      border-color: rgba(34, 197, 94, 0.8);
+      color: #86efac;
+    }
+
+    .option-btn.incorrect {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: rgba(239, 68, 68, 0.8);
+      color: #fca5a5;
+    }
+
+    .feedback-box {
+      display: none;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .feedback-box.show {
+      display: block;
+    }
+
+    .feedback-box.success {
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid rgba(34, 197, 94, 0.6);
+      color: #86efac;
+    }
+
+    .feedback-box.error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      color: #fca5a5;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22d3ee, #06b6d4);
+      color: #0a0e27;
+      box-shadow: 0 8px 20px rgba(34, 211, 238, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(34, 211, 238, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(107, 114, 128, 0.4);
+      color: #e0e7ff;
+      border: 2px solid rgba(107, 114, 128, 0.6);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(107, 114, 128, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      border: 2px solid rgba(239, 68, 68, 0.6);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .sidebar {
+      display: grid;
+      gap: 1.2rem;
+      align-content: start;
+    }
+
+    .section-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 2px solid rgba(34, 211, 238, 0.2);
+      border-radius: 12px;
+      padding: 1.2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .section-title {
+      color: rgba(224, 231, 255, 0.7);
+      font-size: 0.8rem;
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      margin-bottom: 0.8rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #22d3ee, #06b6d4);
+      width: 0%;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+    }
+
+    .progress-text {
+      text-align: center;
+      color: rgba(224, 231, 255, 0.7);
+      font-size: 0.8rem;
+    }
+
+    .code-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(34, 211, 238, 0.4);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #a78bfa;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+    }
+
+    .questions-list {
+      display: grid;
+      gap: 0.8rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .question-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(34, 211, 238, 0.2);
+      border-radius: 8px;
+      padding: 0.8rem;
+      font-size: 0.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .question-item-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: rgba(34, 211, 238, 0.3);
+      border-radius: 50%;
+      font-weight: 900;
+      color: #22d3ee;
+      margin-right: 0.5rem;
+    }
+
+    .question-item-title {
+      color: #e0e7ff;
+      font-weight: 700;
+    }
+
+    .question-item-text {
+      color: rgba(224, 231, 255, 0.7);
+      margin-top: 0.4rem;
+      font-size: 0.75rem;
+    }
+
+    .completion-badge {
+      display: none;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
+      border: 2px solid rgba(34, 197, 94, 0.8);
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .completion-badge.show {
+      display: block;
+    }
+
+    .completion-badge h3 {
+      font-size: 1.2rem;
+      color: #86efac;
+      margin-bottom: 0.5rem;
+    }
+
+    .completion-badge p {
+      color: rgba(224, 231, 255, 0.8);
+      font-size: 0.85rem;
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
- <body class="h-full">
-  <div class="app-wrapper" id="appWrapper" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); position: relative; overflow: hidden;"><!-- Bolhas Flutuantes de Fundo -->
-   <div class="floating-bubbles">
-    <div class="bubble" style="left: 5%; top: 10%; width: 120px; height: 120px; animation-delay: 0s;"></div>
-    <div class="bubble" style="left: 85%; top: 20%; width: 80px; height: 80px; animation-delay: 2s;"></div>
-    <div class="bubble" style="left: 15%; top: 70%; width: 100px; height: 100px; animation-delay: 4s;"></div>
-    <div class="bubble" style="left: 80%; top: 60%; width: 90px; height: 90px; animation-delay: 6s;"></div>
-    <div class="bubble" style="left: 50%; top: 15%; width: 70px; height: 70px; animation-delay: 3s;"></div>
-    <div class="bubble" style="left: 25%; top: 50%; width: 110px; height: 110px; animation-delay: 5s;"></div>
-    <div class="bubble" style="left: 70%; top: 80%; width: 85px; height: 85px; animation-delay: 1s;"></div>
-    <div class="bubble" style="left: 10%; top: 30%; width: 95px; height: 95px; animation-delay: 7s;"></div>
-   </div><!-- Tela Inicial -->
-   <div id="startScreen" class="min-h-full flex flex-col items-center justify-center p-6 text-center fade-in">
-    <div class="mb-8">
-     <div class="text-7xl mb-6">
-      🏥
-     </div>
-     <h1 id="mainTitle" class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 mb-3" style="font-family: 'Outfit', sans-serif;">ESCAPE GAME</h1>
-     <p id="mainSubtitle" class="text-xl md:text-2xl text-slate-300 font-semibold" style="font-family: 'Outfit', sans-serif;">Sistema Digestório</p>
-     <p class="text-slate-400 mt-4 max-w-md mx-auto">10 fases desafiadoras sobre anatomia do sistema digestório. Acerte para ganhar chaves e abrir caixas!</p>
-    </div><button id="startBtn" class="option-btn px-10 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-cyan-500/30" style="font-family: 'Outfit', sans-serif;"> 🚀 Iniciar Jogo </button>
-    <div class="mt-8 flex gap-6 text-slate-400">
-     <div class="text-center">
-      <div class="text-2xl font-bold text-cyan-400">
-       10
+ <body>
+  <div class="bg-anim">
+   <div class="bg-blob blob-1"></div>
+   <div class="bg-blob blob-2"></div>
+   <div class="bg-blob blob-3"></div>
+  </div>
+  <div class="app-wrapper">
+   <header>
+    <div class="header-content">
+     <h1>🧬 ESCAPE GAME — SISTEMA DIGESTÓRIO</h1>
+     <p class="subtitle">10 fases de desafio. Acerte as perguntas e decodifique o segredo final.</p>
+     <div class="stats">
+      <div class="stat-box">
+       <div class="stat-label">
+        Fase Atual
+       </div>
+       <div class="stat-value" id="phaseDisplay">
+        1/10
+       </div>
       </div>
-      <div class="text-sm">
-       Chaves
+      <div class="stat-box">
+       <div class="stat-label">
+        Acertos
+       </div>
+       <div class="stat-value" id="hitsDisplay">
+        0
+       </div>
       </div>
-     </div>
-     <div class="text-center">
-      <div class="text-2xl font-bold text-emerald-400">
-       🏆
-      </div>
-      <div class="text-sm">
-       Escape!
+      <div class="stat-box">
+       <div class="stat-label">
+        Status
+       </div>
+       <div class="stat-value" id="statusDisplay">
+        ▶ Pronto
+       </div>
       </div>
      </div>
     </div>
-   </div><!-- Tela do Jogo -->
-   <div id="gameScreen" class="min-h-full p-4 md:p-6 hidden">
-    <div class="max-w-3xl mx-auto"><!-- Header -->
-     <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3"><span class="text-3xl">🔬</span>
-       <div>
-        <h2 id="gameTitle" class="text-lg font-bold text-cyan-400" style="font-family: 'Outfit', sans-serif;">Escape Game</h2>
-        <p class="text-slate-400 text-sm">Sistema Digestório</p>
-       </div>
+   </header>
+   <div class="main-content">
+    <section class="card">
+     <div class="card-header">
+      <div class="card-title" id="phaseTitle">
+       Fase 1
       </div>
-      <div id="phaseIndicator" class="bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700"><span class="text-cyan-400 font-bold" style="font-family: 'Outfit', sans-serif;">Fase <span id="currentPhase">1</span>/10</span>
+      <div class="card-subtitle" id="phaseDesc">
+       Retroperitônio secundário
       </div>
-     </div><!-- Barra de Progresso -->
-     <div class="mb-6">
-      <div class="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-       <div id="progressBar" class="progress-fill h-full bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-full" style="width: 0%"></div>
-      </div>
-     </div><!-- Container de Chaves Coletadas -->
-     <div class="mb-6 p-4 bg-slate-800/40 rounded-2xl border border-slate-700/50">
-      <p class="text-slate-400 text-sm mb-3 text-center">🔑 Chaves coletadas:</p>
-      <div class="key-container" id="keyContainer"><!-- Chaves aparecerão aqui -->
-      </div>
-     </div><!-- Card da Pergunta -->
-     <div id="questionCard" class="bg-slate-800/60 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-6 md:p-8 shadow-2xl fade-in"><!-- Título da Fase -->
-      <div class="flex items-center gap-3 mb-4"><span id="phaseIcon" class="text-2xl">🫁</span>
-       <h3 id="phaseTitle" class="text-xl font-bold text-white" style="font-family: 'Outfit', sans-serif;">Peritônio</h3>
-      </div><!-- Pergunta -->
-      <p id="questionText" class="text-lg text-slate-200 mb-6 leading-relaxed">Qual órgão abaixo é considerado secundariamente retroperitoneal?</p><!-- Imagem da Fase -->
-      <div id="imageContainer" class="mb-8 rounded-2xl overflow-hidden bg-slate-700/30 border border-slate-600/50 flex items-center justify-center min-h-64"><img id="phaseImage" src="" alt="Ilustração da fase" class="w-full h-full object-cover" loading="lazy" onerror="console.error('Imagem falhou:', this.src); this.style.background='#334155'; this.alt='Imagem indisponível';">
-      </div><!-- Opções -->
-      <div id="optionsContainer" class="grid gap-3"><!-- Opções serão inseridas via JS -->
-      </div><!-- Feedback com Box e Chave -->
-      <div id="feedback" class="hidden mt-6 text-center">
-       <div id="feedbackContainer" class="mb-4 min-h-12">
-        <p id="feedbackText" class="font-semibold text-lg"></p>
-       </div><!-- Box com Chave -->
-       <div id="boxContainer" class="hidden relative flex justify-center mb-6">
-        <div class="text-8xl box-open">
-         📦
-        </div>
-        <div id="floatingKey" class="absolute text-6xl key-appear" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
-         🔑
-        </div>
-       </div>
-      </div><!-- Botão Próxima --> <button id="nextBtn" class="hidden w-full mt-6 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-bold text-lg rounded-2xl shadow-lg option-btn" style="font-family: 'Outfit', sans-serif;"> Próxima Fase → </button>
      </div>
-    </div>
-   </div><!-- Tela Final -->
-   <div id="endScreen" class="min-h-full flex flex-col items-center justify-center p-6 text-center hidden">
-    <div class="fade-in">
-     <div id="finalEmoji" class="text-8xl mb-6">
-      🏆
+     <div class="card-body">
+      <div class="image-container"><img id="qImg" alt="Imagem da questão" loading="lazy" onerror="console.error('Imagem não carregada:', this.src); this.style.background='#e5e7eb'; this.alt='Imagem indisponível';">
+      </div>
+      <div class="question-text" id="questionText">
+       Qual dos órgãos abaixo é considerado secundariamente retroperitoneal?
+      </div>
+      <div class="options-grid" id="optionsContainer"></div>
+      <div class="feedback-box" id="feedbackBox"></div>
+      <div class="button-group"><button class="btn btn-secondary" id="retryBtn">↻ Tentar</button> <button class="btn btn-primary" id="nextBtn">Próxima →</button> <button class="btn btn-danger" id="resetBtn">Reiniciar</button>
+      </div>
      </div>
-     <h2 id="finalTitle" class="text-3xl md:text-4xl font-black text-white mb-4" style="font-family: 'Outfit', sans-serif;">PARABÉNS!</h2>
-     <p id="finalMessage" class="text-xl text-cyan-400 font-bold mb-8" style="font-family: 'Outfit', sans-serif;">VOCÊ ESCAPOU!</p>
-     <div class="bg-slate-800/60 backdrop-blur-sm rounded-3xl border border-slate-700/50 p-8 mb-8 max-w-sm mx-auto">
-      <h3 class="text-lg font-semibold text-slate-400 mb-6">Chaves Coletadas</h3>
-      <div class="key-container" id="finalKeyContainer"><!-- 10 chaves finais -->
+    </section>
+    <div class="sidebar">
+     <div class="section-card">
+      <div class="section-title">
+       📊 Progresso
       </div>
-      <div class="mt-6 text-4xl font-black text-emerald-400" style="font-family: 'Outfit', sans-serif;">
-       ✨ 10/10 ✨
+      <div class="progress-bar">
+       <div class="progress-fill" id="progressFill"></div>
       </div>
-     </div><button id="restartBtn" class="option-btn px-10 py-4 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-cyan-500/30" style="font-family: 'Outfit', sans-serif;"> 🔄 Jogar Novamente </button>
+      <p class="progress-text"><span id="progressPercent">0</span>%</p>
+     </div>
+     <div class="section-card">
+      <div class="section-title">
+       🔑 Código Final
+      </div>
+      <div class="code-box" id="codeBox">
+       — — — — — — — — — —
+      </div>
+      <p style="color: rgba(224, 231, 255, 0.6); font-size: 0.8rem;">✨ Cada acerto libera um fragmento.</p>
+     </div>
+     <div class="completion-badge" id="completionBadge">
+      <h3>🎉 Missão Concluída!</h3>
+      <p>Parabéns! Você decodificou o segredo do sistema digestório!</p>
+     </div>
+     <div class="section-card">
+      <div class="section-title">
+       📋 Perguntas
+      </div>
+      <div class="questions-list" id="questionsList"></div>
+     </div>
     </div>
    </div>
   </div>
   <script>
-    // Dados das 10 fases
-    const phases = [
+    const QUESTIONS = [
       {
-        id: 1,
-        icon: "🫁",
-        title: "Peritônio",
-        question: "Qual órgão abaixo é considerado secundariamente retroperitoneal?",
-        image: "assets/image/q1_question_20206210_080350_0000.png",
-        options: [
-          { letter: "A", text: "Estômago" },
-          { letter: "B", text: "Baço" },
-          { letter: "C", text: "Jejuno" },
-          { letter: "D", text: "Duodeno (2ª-4ª porções)" },
-          { letter: "E", text: "Apêndice vermiforme" }
-        ],
-        correct: "D"
+        id: "Fase 1 — Peritônio",
+        desc: "Retroperitônio secundário",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q1_question_20206210_080350_0000.png",
+        q: "Qual dos órgãos abaixo é considerado secundariamente retroperitoneal?",
+        options: ["A) Estômago", "B) Baço", "C) Jejuno", "D) Duodeno (2ª–4ª porções)", "E) Cólon transverso"],
+        correctIndex: 3,
+        fragment: "D1",
+        explain: "O duodeno (2ª–4ª porções) é secundariamente retroperitoneal."
       },
       {
-        id: 2,
-        icon: "🫀",
-        title: "Segmentação Hepática",
-        question: "Os segmentos anatômico-funcionais do fígado são definidos principalmente com base:",
-        image: "assets/image/q2_question_20206210_080535_0000.png",
-        options: [
-          { letter: "A", text: "Na drenagem das veias hepáticas" },
-          { letter: "B", text: "Nos ligamentos do fígado" },
-          { letter: "C", text: "Na divisão em lobos anatômicos" },
-          { letter: "D", text: "Na inervação do órgão" },
-          { letter: "E", text: "Na ramificação portal (veia porta, artéria hepática e ductos biliares)" }
-        ],
-        correct: "E"
+        id: "Fase 2 — Segmentação hepática",
+        desc: "Segmentos anatômico-funcionais",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q2_question_20206210_080535_0000.png",
+        q: "Os segmentos anatômico-funcionais do fígado são definidos principalmente com base:",
+        options: ["A) Na drenagem linfática", "B) Nos ligamentos peritoneais", "C) Na distribuição dos ramos da veia cava inferior", "D) Na divisão por veias hepáticas apenas", "E) Na ramificação portal (veia porta, artéria hepática e ductos biliares)"],
+        correctIndex: 4,
+        fragment: "E2",
+        explain: "A segmentação funcional segue a distribuição portal."
       },
       {
-        id: 3,
-        icon: "🧬",
-        title: "Intestino Delgado",
-        question: "Qual característica anatômica diferencia o jejuno do íleo?",
-        image: "assets/image/q3_question_20206210_080921_0000.png",
-        options: [
-          { letter: "A", text: "Maior quantidade de tecido linfoide no jejuno" },
-          { letter: "B", text: "Paredes mais espessas e pregas circulares mais desenvolvidas no jejuno" },
-          { letter: "C", text: "Presença de vilosidades apenas no íleo" },
-          { letter: "D", text: "O jejuno recebe secreções pancreáticas e o íleo não" },
-          { letter: "E", text: "O íleo está fixado pelo mesentério e o jejuno não" }
-        ],
-        correct: "B"
+        id: "Fase 3 — Intestino delgado",
+        desc: "Jejuno vs íleo",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q3_question_20206210_080921_0000.png",
+        q: "Qual característica anatômica diferencia o jejuno do íleo?",
+        options: ["A) Maior quantidade de placas de Peyer no jejuno", "B) Paredes mais espessas e pregas circulares mais desenvolvidas no jejuno", "C) Mesentério mais rico em gordura no jejuno", "D) Menor vascularização no jejuno", "E) Ausência de arcadas arteriais no jejuno"],
+        correctIndex: 1,
+        fragment: "B3",
+        explain: "O jejuno tem parede mais espessa e pregas circulares mais desenvolvidas."
       },
       {
-        id: 4,
-        icon: "🔬",
-        title: "Retroperitônio",
-        question: "Órgão primariamente retroperitoneal:",
-        image: "assets/image/q4_question_20206210_081233_0000.png",
-        options: [
-          { letter: "A", text: "Estômago" },
-          { letter: "B", text: "Duodeno (2ª-4ª porções)" },
-          { letter: "C", text: "Cólon ascendente" },
-          { letter: "D", text: "Rins" },
-          { letter: "E", text: "Pâncreas (corpo e cauda)" }
-        ],
-        correct: "D"
+        id: "Fase 4 — Retroperitônio primário",
+        desc: "Órgão primariamente retroperitoneal",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q4_question_20206210_081233_0000.png",
+        q: "Órgão primariamente retroperitoneal:",
+        options: ["A) Estômago", "B) Baço", "C) Fígado", "D) Rins", "E) Jejuno"],
+        correctIndex: 3,
+        fragment: "D4",
+        explain: "Os rins são primariamente retroperitoneais."
       },
       {
-        id: 5,
-        icon: "📍",
-        title: "Pregas Circulares",
-        question: "As pregas circulares são mais desenvolvidas no:",
-        image: "assets/image/q5_question_20206210_081443_0000.png",
-        options: [
-          { letter: "A", text: "Esôfago" },
-          { letter: "B", text: "Duodeno" },
-          { letter: "C", text: "Jejuno" },
-          { letter: "D", text: "Íleo" },
-          { letter: "E", text: "Cólon" }
-        ],
-        correct: "C"
+        id: "Fase 5 — Pregas circulares",
+        desc: "Pregas circulares",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q5_question_20206210_081443_0000.png",
+        q: "As pregas circulares são mais desenvolvidas no:",
+        options: ["A) Íleo distal", "B) Duodeno proximal", "C) Jejuno", "D) Ceco", "E) Cólon transverso"],
+        correctIndex: 2,
+        fragment: "C5",
+        explain: "Pregas circulares mais desenvolvidas: jejuno."
       },
       {
-        id: 6,
-        icon: "🌀",
-        title: "Tênias Cólicas",
-        question: "As tênias cólicas estão presentes no:",
-        image: "assets/image/q6_question_20206210_081817_0000.png",
-        options: [
-          { letter: "A", text: "Jejuno" },
-          { letter: "B", text: "Íleo" },
-          { letter: "C", text: "Estômago" },
-          { letter: "D", text: "Cólon" },
-          { letter: "E", text: "Reto" }
-        ],
-        correct: "D"
+        id: "Fase 6 — Tênias cólicas",
+        desc: "Tênias cólicas",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q6_question_20206210_081817_0000.png",
+        q: "As tênias cólicas estão presentes no:",
+        options: ["A) Jejuno", "B) Íleo", "C) Reto", "D) Cólon", "E) Duodeno"],
+        correctIndex: 3,
+        fragment: "D6",
+        explain: "Tênias cólicas: presentes no cólon."
       },
       {
-        id: 7,
-        icon: "🪱",
-        title: "Apêndice Vermiforme",
-        question: "O apêndice vermiforme origina-se do:",
-        image: "assets/image/q7_question_20206210_082024_0000.png",
-        options: [
-          { letter: "A", text: "Íleo terminal" },
-          { letter: "B", text: "Cólon ascendente" },
-          { letter: "C", text: "Ceco" },
-          { letter: "D", text: "Válvula ileocecal" },
-          { letter: "E", text: "Cólon transverso" }
-        ],
-        correct: "C"
+        id: "Fase 7 — Apêndice vermiforme",
+        desc: "Apêndice vermiforme",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q7_question_20206210_082024_0000.png",
+        q: "O apêndice vermiforme origina-se do:",
+        options: ["A) Íleo", "B) Cólon ascendente", "C) Ceco", "D) Sigmoide", "E) Reto"],
+        correctIndex: 2,
+        fragment: "C7",
+        explain: "O apêndice se origina do ceco."
       },
       {
-        id: 8,
-        icon: "💧",
-        title: "Drenagem no Duodeno",
-        question: "O que o duodeno recebe?",
-        image: "assets/image/q8_question_20206210_082335_0000.png",
-        options: [
-          { letter: "A", text: "Apenas bile" },
-          { letter: "B", text: "Apenas suco pancreático" },
-          { letter: "C", text: "Apenas quimo gástrico" },
-          { letter: "D", text: "Colédoco + ducto pancreático principal" },
-          { letter: "E", text: "Secreções do íleo" }
-        ],
-        correct: "D"
+        id: "Fase 8 — Drenagem no duodeno",
+        desc: "Drenagem no duodeno",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q8_question_20206210_082335_0000.png",
+        q: "O que o duodeno recebe?",
+        options: ["A) Apenas suco pancreático", "B) Apenas bile", "C) Ducto cístico", "D) Colédoco + ducto pancreático principal", "E) Veia porta"],
+        correctIndex: 3,
+        fragment: "D8",
+        explain: "O duodeno recebe colédoco + ducto pancreático principal."
       },
       {
-        id: 9,
-        icon: "📎",
-        title: "Fixação pelo Mesentério",
-        question: "O mesentério fixa principalmente o:",
-        image: "assets/image/q9_question_20206210_082954_0000.png",
-        options: [
-          { letter: "A", text: "Estômago" },
-          { letter: "B", text: "Duodeno" },
-          { letter: "C", text: "Jejuno e íleo" },
-          { letter: "D", text: "Cólon ascendente" },
-          { letter: "E", text: "Reto" }
-        ],
-        correct: "C"
+        id: "Fase 9 — Fixação pelo mesentério",
+        desc: "Fixação pelo mesentério",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q9_question_20206210_082954_0000.png",
+        q: "O mesentério fixa principalmente o:",
+        options: ["A) Duodeno", "B) Cólon descendente", "C) Jejuno e íleo", "D) Estômago", "E) Reto"],
+        correctIndex: 2,
+        fragment: "C9",
+        explain: "O mesentério fixa principalmente jejuno e íleo."
       },
       {
-        id: 10,
-        icon: "↪️",
-        title: "Flexura Cólica Esquerda",
-        question: "A flexura cólica esquerda relaciona-se superiormente com o:",
-        image: "assets/image/q10_question_20206210_083917_0000.png",
-        options: [
-          { letter: "A", text: "Fígado" },
-          { letter: "B", text: "Baço" },
-          { letter: "C", text: "Rim esquerdo" },
-          { letter: "D", text: "Estômago" },
-          { letter: "E", text: "Pâncreas" }
-        ],
-        correct: "B"
+        id: "Fase 10 — Flexura cólica esquerda",
+        desc: "Flexura cólica esquerda",
+        img: "https://cdn.jsdelivr.net/gh/canva-code/digestive-system@main/q10_question_20206210_083917_0000.png",
+        q: "A flexura cólica esquerda relaciona-se superiormente com o:",
+        options: ["A) Fígado", "B) Baço", "C) Rim direito", "D) Pâncreas", "E) Estômago"],
+        correctIndex: 1,
+        fragment: "B0",
+        explain: "A flexura cólica esquerda (esplênica) relaciona-se com o baço."
       }
     ];
 
-    // Estado do jogo
-    let currentPhaseIndex = 0;
-    let collectedKeys = [];
-    let answered = false;
-
-    // Elementos DOM
-    const startScreen = document.getElementById('startScreen');
-    const gameScreen = document.getElementById('gameScreen');
-    const endScreen = document.getElementById('endScreen');
-    const startBtn = document.getElementById('startBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const restartBtn = document.getElementById('restartBtn');
-    const currentPhaseEl = document.getElementById('currentPhase');
-    const progressBar = document.getElementById('progressBar');
-    const phaseIcon = document.getElementById('phaseIcon');
-    const phaseTitle = document.getElementById('phaseTitle');
-    const questionText = document.getElementById('questionText');
-    const optionsContainer = document.getElementById('optionsContainer');
-    const feedback = document.getElementById('feedback');
-    const feedbackText = document.getElementById('feedbackText');
-    const questionCard = document.getElementById('questionCard');
-    const keyContainer = document.getElementById('keyContainer');
-    const boxContainer = document.getElementById('boxContainer');
-    const floatingKey = document.getElementById('floatingKey');
-
-    // Config para edição
-    const defaultConfig = {
-      game_title: "ESCAPE GAME",
-      subtitle: "Sistema Digestório",
-      victory_text: "PARABÉNS! VOCÊ ESCAPOU!"
+    let state = {
+      idx: 0,
+      hits: 0,
+      fragments: Array(QUESTIONS.length).fill(null),
+      locked: false,
+      answered: new Set()
     };
 
-    let config = { ...defaultConfig };
+    const elements = {
+      phaseTitle: document.getElementById('phaseTitle'),
+      phaseDesc: document.getElementById('phaseDesc'),
+      questionText: document.getElementById('questionText'),
+      optionsContainer: document.getElementById('optionsContainer'),
+      feedbackBox: document.getElementById('feedbackBox'),
+      qImg: document.getElementById('qImg'),
+      retryBtn: document.getElementById('retryBtn'),
+      nextBtn: document.getElementById('nextBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      progressFill: document.getElementById('progressFill'),
+      progressPercent: document.getElementById('progressPercent'),
+      codeBox: document.getElementById('codeBox'),
+      phaseDisplay: document.getElementById('phaseDisplay'),
+      hitsDisplay: document.getElementById('hitsDisplay'),
+      statusDisplay: document.getElementById('statusDisplay'),
+      completionBadge: document.getElementById('completionBadge'),
+      questionsList: document.getElementById('questionsList')
+    };
 
-    // Funções do jogo
-    function startGame() {
-      currentPhaseIndex = 0;
-      collectedKeys = [];
+    function updateUI() {
+      const q = QUESTIONS[state.idx];
       
-      startScreen.classList.add('hidden');
-      endScreen.classList.add('hidden');
-      gameScreen.classList.remove('hidden');
-      
-      updateKeyDisplay();
-      loadPhase();
-    }
+      elements.phaseTitle.textContent = q.id;
+      elements.phaseDesc.textContent = q.desc;
+      elements.questionText.textContent = q.q;
+      elements.qImg.src = q.img;
 
-    function loadPhase() {
-      answered = false;
-      const phase = phases[currentPhaseIndex];
-      
-      currentPhaseEl.textContent = currentPhaseIndex + 1;
-      progressBar.style.width = `${(currentPhaseIndex / 10) * 100}%`;
-      
-      phaseIcon.textContent = phase.icon;
-      phaseTitle.textContent = phase.title;
-      questionText.textContent = phase.question;
-      
-      // Carregar imagem
-      const phaseImage = document.getElementById('phaseImage');
-      phaseImage.src = phase.image;
-      
-      // Criar opções
-      optionsContainer.innerHTML = '';
-      phase.options.forEach(opt => {
+      elements.phaseDisplay.textContent = `${state.idx + 1}/10`;
+      elements.hitsDisplay.textContent = state.hits;
+
+      const progress = Math.round(((state.idx + 1) / QUESTIONS.length) * 100);
+      elements.progressFill.style.width = progress + '%';
+      elements.progressPercent.textContent = progress;
+
+      elements.codeBox.textContent = state.fragments.map(f => f ?? '—').join(' ');
+
+      elements.optionsContainer.innerHTML = '';
+      q.options.forEach((opt, i) => {
         const btn = document.createElement('button');
-        btn.className = 'option-btn w-full text-left p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl transition-all flex items-center gap-4';
-        btn.innerHTML = `
-          <span class="flex-shrink-0 w-10 h-10 bg-slate-600 rounded-lg flex items-center justify-center font-bold text-cyan-400" style="font-family: 'Outfit', sans-serif;">${opt.letter}</span>
-          <span class="text-slate-200">${opt.text}</span>
-        `;
-        btn.onclick = () => selectOption(opt.letter, btn);
-        optionsContainer.appendChild(btn);
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.disabled = state.locked;
+        btn.onclick = () => answerQuestion(i);
+        elements.optionsContainer.appendChild(btn);
       });
+
+      elements.feedbackBox.className = 'feedback-box';
+      elements.feedbackBox.textContent = '';
+
+      elements.retryBtn.disabled = !state.answered.has(state.idx);
+      elements.nextBtn.disabled = !state.answered.has(state.idx);
       
-      // Esconder feedback e botão próxima
-      feedback.classList.add('hidden');
-      boxContainer.classList.add('hidden');
-      nextBtn.classList.add('hidden');
-      
-      // Animação
-      questionCard.classList.remove('fade-in');
-      void questionCard.offsetWidth;
-      questionCard.classList.add('fade-in');
+      if (state.idx === QUESTIONS.length - 1) {
+        elements.nextBtn.textContent = '✓ Concluído';
+      } else {
+        elements.nextBtn.textContent = 'Próxima →';
+      }
+
+      elements.completionBadge.classList.remove('show');
+
+      if (state.idx === QUESTIONS.length - 1 && state.answered.has(state.idx)) {
+        if (state.hits === QUESTIONS.length) {
+          elements.completionBadge.classList.add('show');
+          elements.statusDisplay.textContent = '🎉 Completo!';
+        }
+      }
+
+      renderQuestionsList();
     }
 
-    function selectOption(letter, btn) {
-      if (answered) return;
-      answered = true;
+    function answerQuestion(chosenIdx) {
+      if (state.locked) return;
       
-      const phase = phases[currentPhaseIndex];
-      const isCorrect = letter === phase.correct;
+      state.locked = true;
+      const q = QUESTIONS[state.idx];
+      const isCorrect = chosenIdx === q.correctIndex;
+
+      const buttons = document.querySelectorAll('.option-btn');
       
-      // Desabilitar todas as opções
-      const allBtns = optionsContainer.querySelectorAll('button');
-      allBtns.forEach(b => {
-        b.disabled = true;
-        b.classList.add('opacity-60');
-      });
-      
-      feedback.classList.remove('hidden');
-      
-      if (isCorrect) {
-        btn.classList.remove('bg-slate-700/50', 'border-slate-600', 'opacity-60');
-        btn.classList.add('bg-emerald-500/30', 'border-emerald-500');
-        
-        feedbackText.textContent = '✅ Correto! Você ganhou uma chave!';
-        feedbackText.classList.remove('text-rose-400');
-        feedbackText.classList.add('text-emerald-400');
-        
-        questionCard.classList.add('pulse-success');
-        setTimeout(() => questionCard.classList.remove('pulse-success'), 600);
-        
-        // Mostrar caixa abrindo e chave flutuando
-        setTimeout(() => {
-          boxContainer.classList.remove('hidden');
-          collectedKeys.push(currentPhaseIndex + 1);
-          
-          setTimeout(() => {
-            floatingKey.classList.add('key-float');
-            
-            setTimeout(() => {
-              updateKeyDisplay();
-              floatingKey.classList.remove('key-float');
-              nextBtn.classList.remove('hidden');
-              
-              if (currentPhaseIndex === phases.length - 1) {
-                nextBtn.textContent = '🏆 Abrir Todas!';
-              } else {
-                nextBtn.textContent = 'Próxima Fase →';
-              }
-            }, 800);
-          }, 600);
-        }, 300);
+      if (!isCorrect) {
+        buttons[chosenIdx].classList.add('incorrect');
+        elements.feedbackBox.classList.add('show', 'error');
+        elements.feedbackBox.textContent = `❌ Incorreto. Tente novamente!`;
+        elements.statusDisplay.textContent = '✗ Errado';
+        // Habilita o botão de tentar novamente
+        elements.retryBtn.disabled = false;
       } else {
-        btn.classList.remove('bg-slate-700/50', 'border-slate-600', 'opacity-60');
-        btn.classList.add('bg-rose-500/30', 'border-rose-500');
+        if (!state.fragments[state.idx]) {
+          state.hits++;
+          state.fragments[state.idx] = q.fragment;
+        }
+        state.answered.add(state.idx);
+        elements.feedbackBox.classList.add('show', 'success');
+        elements.feedbackBox.textContent = `✅ Correto! Fragmento: ${q.fragment} — ${q.explain}`;
+        elements.statusDisplay.textContent = '✓ Acerto';
+        elements.hitsDisplay.textContent = state.hits;
+        elements.codeBox.textContent = state.fragments.map(f => f ?? '—').join(' ');
         
-        // Mostrar resposta correta
-        allBtns.forEach(b => {
-          const letterSpan = b.querySelector('span');
-          if (letterSpan && letterSpan.textContent === phase.correct) {
-            b.classList.remove('opacity-60');
-            b.classList.add('bg-emerald-500/30', 'border-emerald-500');
-          }
-        });
-        
-        feedbackText.textContent = `❌ Incorreto! A resposta certa é: ${phase.correct}`;
-        feedbackText.classList.remove('text-emerald-400');
-        feedbackText.classList.add('text-rose-400');
-        
-        questionCard.classList.add('shake');
-        setTimeout(() => questionCard.classList.remove('shake'), 500);
-        
-        nextBtn.classList.remove('hidden');
-        nextBtn.textContent = 'Próxima Fase →';
+        // LIBERA O AVANÇO:
+        elements.nextBtn.disabled = false;
+        updateProgress();
+      }
+
+      // Destaca a correta e desabilita as opções
+      buttons[q.correctIndex].classList.add('correct');
+      buttons.forEach(btn => btn.disabled = true);
+    }
+
+    function updateProgress() {
+      const progress = Math.round(((state.idx + 1) / QUESTIONS.length) * 100);
+      elements.progressFill.style.width = progress + '%';
+      elements.progressPercent.textContent = progress;
+    }
+
+    function retryQuestion() {
+      state.locked = false;
+      elements.feedbackBox.classList.remove('show');
+      elements.optionsContainer.innerHTML = '';
+      const q = QUESTIONS[state.idx];
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => answerQuestion(i);
+        elements.optionsContainer.appendChild(btn);
+      });
+      elements.retryBtn.disabled = true;
+      elements.statusDisplay.textContent = '↻ Tente novamente';
+    }
+
+    function nextQuestion() {
+      if (state.idx < QUESTIONS.length - 1) {
+        state.idx++;
+        state.locked = false;
+        updateUI();
+        elements.statusDisplay.textContent = '▶ Pronto';
       }
     }
 
-    function updateKeyDisplay() {
-      keyContainer.innerHTML = '';
-      for (let i = 1; i <= 10; i++) {
-        const keyItem = document.createElement('div');
-        keyItem.className = 'key-item';
-        
-        if (collectedKeys.includes(i)) {
-          keyItem.innerHTML = '🔑';
-          keyItem.style.opacity = '1';
-        } else {
-          keyItem.innerHTML = '🔒';
-          keyItem.style.opacity = '0.3';
+    function resetGame() {
+      state = {
+        idx: 0,
+        hits: 0,
+        fragments: Array(QUESTIONS.length).fill(null),
+        locked: false,
+        answered: new Set()
+      };
+      updateUI();
+      elements.statusDisplay.textContent = '↻ Recomeçado';
+    }
+
+    function renderQuestionsList() {
+      elements.questionsList.innerHTML = '';
+      QUESTIONS.forEach((q, idx) => {
+        if (!state.fragments[idx] && idx !== state.idx) return;
+
+        const item = document.createElement('div');
+        item.className = 'question-item';
+        if (idx === state.idx) {
+          item.style.borderColor = 'rgba(34, 211, 238, 0.8)';
+          item.style.background = 'rgba(34, 211, 238, 0.15)';
         }
         
-        keyContainer.appendChild(keyItem);
-      }
-    }
-
-    function nextPhase() {
-      currentPhaseIndex++;
-      
-      if (currentPhaseIndex >= phases.length) {
-        showEndScreen();
-      } else {
-        loadPhase();
-      }
-    }
-
-    function showEndScreen() {
-      gameScreen.classList.add('hidden');
-      endScreen.classList.remove('hidden');
-      
-      document.getElementById('finalTitle').textContent = config.victory_text.split('\n')[0] || 'PARABÉNS!';
-      
-      // Mostrar todas as 10 chaves na tela final
-      const finalKeyContainer = document.getElementById('finalKeyContainer');
-      finalKeyContainer.innerHTML = '';
-      for (let i = 0; i < 10; i++) {
-        const keyItem = document.createElement('div');
-        keyItem.className = 'key-item key-appear';
-        keyItem.textContent = '🔑';
-        keyItem.style.animationDelay = `${i * 0.1}s`;
-        finalKeyContainer.appendChild(keyItem);
-      }
-      
-      // Confetes e animação de chaves se unindo
-      setTimeout(() => {
-        createMassConfetti();
-      }, 800);
-    }
-
-    function createMassConfetti() {
-      const colors = ['#22d3ee', '#4ade80', '#fbbf24', '#f472b6', '#a78bfa', '#ec4899'];
-      
-      // Muitos confetes caindo
-      for (let i = 0; i < 150; i++) {
-        setTimeout(() => {
-          const confetti = document.createElement('div');
-          confetti.className = 'confetti';
-          confetti.style.left = Math.random() * 100 + 'vw';
-          confetti.style.top = '-10px';
-          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-          confetti.style.animation = `confettiFall ${2 + Math.random() * 3}s linear forwards`;
-          document.body.appendChild(confetti);
-          
-          setTimeout(() => confetti.remove(), 5000);
-        }, i * 30);
-      }
-    }
-
-    function restartGame() {
-      endScreen.classList.add('hidden');
-      startScreen.classList.remove('hidden');
-    }
-
-    // Função de renderização para o SDK
-    async function onConfigChange(cfg) {
-      config = { ...defaultConfig, ...cfg };
-      
-      document.getElementById('mainTitle').textContent = config.game_title || defaultConfig.game_title;
-      document.getElementById('mainSubtitle').textContent = config.subtitle || defaultConfig.subtitle;
-      document.getElementById('gameTitle').textContent = config.game_title || defaultConfig.game_title;
-      document.getElementById('finalTitle').textContent = config.victory_text || defaultConfig.victory_text;
-    }
-
-    // Event listeners
-    startBtn.addEventListener('click', startGame);
-    nextBtn.addEventListener('click', nextPhase);
-    restartBtn.addEventListener('click', restartGame);
-
-    // Inicialização do SDK
-    if (window.elementSdk) {
-      window.elementSdk.init({
-        defaultConfig,
-        onConfigChange,
-        mapToCapabilities: (cfg) => ({
-          recolorables: [],
-          borderables: [],
-          fontEditable: undefined,
-          fontSizeable: undefined
-        }),
-        mapToEditPanelValues: (cfg) => new Map([
-          ["game_title", cfg.game_title || defaultConfig.game_title],
-          ["subtitle", cfg.subtitle || defaultConfig.subtitle],
-          ["victory_text", cfg.victory_text || defaultConfig.victory_text]
-        ])
+        const title = document.createElement('div');
+        title.style.display = 'flex';
+        title.style.alignItems = 'center';
+        title.style.gap = '0.5rem';
+        
+        const num = document.createElement('span');
+        num.className = 'question-item-number';
+        num.textContent = idx + 1;
+        
+        const titleText = document.createElement('span');
+        titleText.className = 'question-item-title';
+        titleText.textContent = q.id;
+        
+        const status = document.createElement('span');
+        status.style.marginLeft = 'auto';
+        status.style.fontSize = '0.9rem';
+        status.style.color = state.fragments[idx] ? '#86efac' : 'rgba(224, 231, 255, 0.5)';
+        status.textContent = state.fragments[idx] ? '✅' : idx === state.idx ? '���' : '○';
+        
+        title.appendChild(num);
+        title.appendChild(titleText);
+        title.appendChild(status);
+        item.appendChild(title);
+        elements.questionsList.appendChild(item);
       });
     }
+
+    elements.retryBtn.addEventListener('click', retryQuestion);
+    elements.nextBtn.addEventListener('click', nextQuestion);
+    elements.resetBtn.addEventListener('click', resetGame);
+
+    updateUI();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cbb7a247386034b',t:'MTc3MDcyNTE1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cbbc462c431034b',t:'MTc3MDcyODE5Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ </html>
