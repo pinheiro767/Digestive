@@ -475,9 +475,59 @@
       color: rgba(224, 231, 255, 0.8);
       font-size: 0.85rem;
     }
+
+    /* ✅ NOVO: tela final com vídeo */
+    .end-screen{
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .end-screen.show{
+      display: flex;
+    }
+    .end-card{
+      width: min(900px, 100%);
+      background: rgba(30, 41, 59, 0.65);
+      border: 2px solid rgba(34, 211, 238, 0.3);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 60px rgba(0,0,0,.35);
+      overflow: hidden;
+    }
+    .end-card-header{
+      padding: 1.2rem;
+      border-bottom: 2px solid rgba(34, 211, 238, 0.2);
+      background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0.05));
+    }
+    .end-title{
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #22d3ee;
+    }
+    .end-body{
+      padding: 1.5rem;
+    }
+    .end-video-wrap{
+      border: 2px solid rgba(34, 211, 238, 0.25);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(0,0,0,.35);
+    }
+    .end-video-wrap video{
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .end-actions{
+      margin-top: 1rem;
+      display: flex;
+      gap: .8rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
   </style>
 
-  <!-- (opcional) só mantenha se você realmente usa -->
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
@@ -513,7 +563,8 @@
       </div>
     </header>
 
-    <div class="main-content">
+    <!-- ✅ NOVO: container principal alterna entre "jogo" e "final" -->
+    <div class="main-content" id="gameScreen">
       <section class="card">
         <div class="card-header">
           <div class="card-title" id="phaseTitle">Fase 1</div>
@@ -566,10 +617,37 @@
         </div>
       </div>
     </div>
+
+    <!-- ✅ NOVO: tela final com vídeo -->
+    <div class="end-screen" id="endScreen">
+      <div class="end-card">
+        <div class="end-card-header">
+          <div class="end-title">🎬 Final do Escape — Assista ao vídeo</div>
+        </div>
+        <div class="end-body">
+          <p style="color: rgba(224, 231, 255, 0.8); margin-bottom: 1rem;">
+            Você chegou ao final! Agora, assista ao vídeo de encerramento:
+          </p>
+
+          <div class="end-video-wrap">
+            <!-- ✅ vídeo na mesma pasta das imagens -->
+            <video id="finalVideo" controls preload="metadata">
+              <source src="./assets/image/video.mp4" type="video/mp4" />
+              Seu navegador não suporta vídeo.
+            </video>
+          </div>
+
+          <div class="end-actions">
+            <button class="btn btn-secondary" id="backToGameBtn">← Voltar ao jogo</button>
+            <button class="btn btn-danger" id="restartFromEndBtn">↻ Reiniciar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // ✅ CORRIGIDO: caminhos relativos (de acordo com seu print em assets/image/)
     const QUESTIONS = [
       {
         id: "Fase 1 — Peritônio",
@@ -698,8 +776,30 @@
       hitsDisplay: document.getElementById('hitsDisplay'),
       statusDisplay: document.getElementById('statusDisplay'),
       completionBadge: document.getElementById('completionBadge'),
-      questionsList: document.getElementById('questionsList')
+      questionsList: document.getElementById('questionsList'),
+
+      // ✅ NOVO
+      gameScreen: document.getElementById('gameScreen'),
+      endScreen: document.getElementById('endScreen'),
+      finalVideo: document.getElementById('finalVideo'),
+      backToGameBtn: document.getElementById('backToGameBtn'),
+      restartFromEndBtn: document.getElementById('restartFromEndBtn'),
     };
+
+    function showEndScreen(){
+      elements.gameScreen.style.display = 'none';
+      elements.endScreen.classList.add('show');
+      // tenta iniciar do começo (pode ser bloqueado no celular; por isso também tem controls)
+      try { elements.finalVideo.currentTime = 0; elements.finalVideo.play(); } catch(e){}
+      elements.statusDisplay.textContent = '🎬 Vídeo final';
+    }
+
+    function hideEndScreen(){
+      elements.endScreen.classList.remove('show');
+      elements.gameScreen.style.display = '';
+      try { elements.finalVideo.pause(); } catch(e){}
+      elements.statusDisplay.textContent = '▶ Pronto';
+    }
 
     function updateUI(){
       const q = QUESTIONS[state.idx];
@@ -731,7 +831,6 @@
       elements.feedbackBox.className = 'feedback-box';
       elements.feedbackBox.textContent = '';
 
-      // ✅ Corrigido: "Tentar" só fica habilitado quando erra
       elements.retryBtn.disabled = true;
       elements.nextBtn.disabled = !state.answered.has(state.idx);
 
@@ -761,7 +860,6 @@
         elements.feedbackBox.textContent = '❌ Incorreto. Tente novamente!';
         elements.statusDisplay.textContent = '✗ Errado';
 
-        // ✅ Tentar habilita quando erra
         elements.retryBtn.disabled = false;
         elements.nextBtn.disabled = true;
       } else {
@@ -812,6 +910,12 @@
     }
 
     function nextQuestion(){
+      // ✅ se está na última questão, abre o vídeo final
+      if (state.idx === QUESTIONS.length - 1){
+        if (state.answered.has(state.idx)) showEndScreen();
+        return;
+      }
+
       if (state.idx < QUESTIONS.length - 1){
         state.idx++;
         state.locked = false;
@@ -828,6 +932,7 @@
         locked: false,
         answered: new Set()
       };
+      hideEndScreen();
       updateUI();
       elements.statusDisplay.textContent = '↻ Recomeçado';
     }
@@ -876,6 +981,10 @@
     elements.retryBtn.addEventListener('click', retryQuestion);
     elements.nextBtn.addEventListener('click', nextQuestion);
     elements.resetBtn.addEventListener('click', resetGame);
+
+    // ✅ NOVO: botões da tela final
+    elements.backToGameBtn.addEventListener('click', hideEndScreen);
+    elements.restartFromEndBtn.addEventListener('click', resetGame);
 
     updateUI();
   </script>
